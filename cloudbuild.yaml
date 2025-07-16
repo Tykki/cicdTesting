@@ -1,19 +1,33 @@
 steps:
-# Install
-- name: 'gcr.io/cloud-builders/npm'
-  args: ['install']
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+    - kms
+    - decrypt
+    - --ciphertext-file=.env.enc
+    - --plaintext-file=.env
+    - --location=global
+    - --keyring=myproject
+    - --key=cloudbuild-env
 
-  # Test
-- name: 'gcr.io/cloud-builders/npm'
-  args: ['run', 'test:unit']
+  # Install
+  - name: 'node:22.17'
+    entrypoint: 'npm'
+    args: ['install']
+
+  # Unit Tests
+  - name: 'node:22.17'
+    entrypoint: 'npm'
+    args: ['run', 'test:unit']
 
   # Build
-- name: 'gcr.io/cloud-builders/npm'
-  args: ['run', 'build']
+  - name: 'node:22.17'
+    entrypoint: 'npm'
+    args: ['run', 'build']
 
-  # Deploy
-- name: 'gcr.io/$PROJECT_ID/firebase'
-  args: ['Deploy']
+  # Deploy (requires gcloud/firebase tools)
+  - name: 'node:22.17'
+    entrypoint: 'npm'
+    args: ['run', 'deploy']
 
 options:
   logging: CLOUD_LOGGING_ONLY
