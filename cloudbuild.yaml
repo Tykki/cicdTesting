@@ -14,3 +14,6 @@ steps:
   # Deploy
 - name: 'gcr.io/$PROJECT_ID/firebase'
   args: ['Deploy']
+
+options:
+  logging: CLOUD_LOGGING_ONLY
